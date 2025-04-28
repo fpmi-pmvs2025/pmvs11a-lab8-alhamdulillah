@@ -1,3 +1,21 @@
+package com.example.chess
+
+import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.GridLayout
+import android.widget.ImageView
+import androidx.core.content.ContextCompat.getColor
+import androidx.fragment.app.Fragment
+
+
 class GameFragment : Fragment() {
 
     private lateinit var chessBoard: GridLayout
@@ -6,7 +24,7 @@ class GameFragment : Fragment() {
     private var moveCount = 0
     private var noCaptureOrPawnMoveCount = 0
     private val positionHistory = mutableListOf<String>()
-    private var selectedTheme: String = "classic" // Default theme
+    private var selectedTheme: String = "classic"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -14,6 +32,10 @@ class GameFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_game, container, false)
         chessBoard = view.findViewById(R.id.chessBoard)
+
+        val sharedPreferences = requireContext().getSharedPreferences("ChessGamePrefs", Context.MODE_PRIVATE)
+        selectedTheme = sharedPreferences.getString("theme", "classic") ?: "classic"
+
         initializePieces()
         updateChessBoard()
         return view
@@ -134,6 +156,14 @@ class GameFragment : Fragment() {
                 clearHighlights()
                 selectedPiece = null
                 checkGameStatus()
+            }
+            else if (ChessBoardManager.getBoard()[row][col] != null && (moveCount + 1) % 2 == ChessBoardManager.getBoard()[row][col]?.color) {
+                selectedPiece = ChessBoardManager.getBoard()[row][col]
+                highlightMoves(row, col)
+            }
+            else {
+                clearHighlights()
+                selectedPiece = null
             }
         } else if (ChessBoardManager.getBoard()[row][col] != null && (moveCount + 1) % 2 == ChessBoardManager.getBoard()[row][col]?.color) {
             selectedPiece = ChessBoardManager.getBoard()[row][col]

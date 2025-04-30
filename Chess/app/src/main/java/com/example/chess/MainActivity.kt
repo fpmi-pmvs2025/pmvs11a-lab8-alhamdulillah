@@ -22,18 +22,29 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnSettings).setOnClickListener {
             openSettings()
         }
+
+        findViewById<Button>(R.id.btnGameHistory).setOnClickListener {
+            openGameHistory()
+        }
     }
 
     private fun startGame() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, GameFragment())
+            .add(R.id.fragment_container, GameFragment())
             .addToBackStack(null)
             .commit()
     }
 
     private fun openSettings() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, SettingsFragment())
+            .add(R.id.fragment_container, SettingsFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun openGameHistory() {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragment_container, GameListFragment())
             .addToBackStack(null)
             .commit()
     }

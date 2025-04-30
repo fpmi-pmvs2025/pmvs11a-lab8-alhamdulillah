@@ -3,6 +3,7 @@ package com.example.chess
 class Queen(position: Pair<Int, Int>, color: Int) : Piece(position, color) {
     override val imageRes: Int
         get() = if (color == 1) R.drawable.wq else R.drawable.bq
+    override val pieceName: String get() = "q"
 
     override fun getMoves(board: Array<Array<Piece?>>): Array<Array<Boolean>> {
         val moves = Array(8) { Array(8) { false } }

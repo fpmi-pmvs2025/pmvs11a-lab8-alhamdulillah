@@ -4,6 +4,8 @@ class Bishop(position: Pair<Int, Int>, color: Int) : Piece(position, color) {
     override val imageRes: Int
         get() = if (color == 1) R.drawable.wb else R.drawable.bb
 
+    override val pieceName: String get() = "b"
+
     override fun getMoves(board: Array<Array<Piece?>>): Array<Array<Boolean>> {
         val moves = Array(8) { Array(8) { false } }
         val (row, col) = position

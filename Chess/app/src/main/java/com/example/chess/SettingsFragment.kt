@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import java.util.Locale
 
 class SettingsFragment : Fragment() {
 
@@ -35,7 +36,8 @@ class SettingsFragment : Fragment() {
 
         themeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val theme = parent.getItemAtPosition(position).toString().toLowerCase()
+                val theme = parent.getItemAtPosition(position).toString()
+                    .lowercase(Locale.getDefault())
                 sharedPreferences.edit().putString("theme", theme).apply()
             }
 
@@ -48,7 +50,7 @@ class SettingsFragment : Fragment() {
 
     private fun getIndex(spinner: Spinner, theme: String): Int {
         for (i in 0 until spinner.count) {
-            if (spinner.getItemAtPosition(i).toString().toLowerCase() == theme) {
+            if (spinner.getItemAtPosition(i).toString().lowercase(Locale.getDefault()) == theme) {
                 return i
             }
         }

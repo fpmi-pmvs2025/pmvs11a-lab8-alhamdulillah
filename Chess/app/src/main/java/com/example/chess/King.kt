@@ -4,6 +4,8 @@ class King(position: Pair<Int, Int>, color: Int) : Piece(position, color) {
     override val imageRes: Int
         get() = if (color == 1) R.drawable.wk else R.drawable.bk
 
+    override val pieceName: String get() = "k"
+
     override fun getMoves(board: Array<Array<Piece?>>): Array<Array<Boolean>> {
         val moves = Array(8) { Array(8) { false } }
         val (row, col) = position

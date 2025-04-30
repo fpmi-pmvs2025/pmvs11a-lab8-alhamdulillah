@@ -5,6 +5,7 @@ import android.graphics.Color
 class Pawn(position: Pair<Int, Int>, color: Int) : Piece(position, color) {
     override val imageRes: Int
         get() = if (color == 1) R.drawable.wp else R.drawable.bp
+    override val pieceName: String get() = "p"
 
     override fun getMoves(board: Array<Array<Piece?>>): Array<Array<Boolean>> {
         val moves = Array(8) { Array(8) { false } }

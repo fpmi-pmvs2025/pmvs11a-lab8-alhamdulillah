@@ -4,6 +4,8 @@ class Knight(position: Pair<Int, Int>, color: Int) : Piece(position, color) {
     override val imageRes: Int
         get() = if (color == 1) R.drawable.wn else R.drawable.bn
 
+    override val pieceName: String get() = "n"
+
     override fun getMoves(board: Array<Array<Piece?>>): Array<Array<Boolean>> {
         val moves = Array(8) { Array(8) { false } }
 

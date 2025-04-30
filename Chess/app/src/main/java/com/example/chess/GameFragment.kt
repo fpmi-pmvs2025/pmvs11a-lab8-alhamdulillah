@@ -14,6 +14,9 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import kotlinx.coroutines.launch
 
 
 class GameFragment : Fragment() {
@@ -25,6 +28,7 @@ class GameFragment : Fragment() {
     private var noCaptureOrPawnMoveCount = 0
     private val positionHistory = mutableListOf<String>()
     private var selectedTheme: String = "classic"
+    private lateinit var db: AppDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +40,14 @@ class GameFragment : Fragment() {
         val sharedPreferences = requireContext().getSharedPreferences("ChessGamePrefs", Context.MODE_PRIVATE)
         selectedTheme = sharedPreferences.getString("theme", "classic") ?: "classic"
 
+        db = Room.databaseBuilder(
+            requireContext(),
+            AppDatabase::class.java, "chess-database"
+        ).build()
+
         initializePieces()
         updateChessBoard()
+        positionHistory.add(getCurrentPositionString())
         return view
     }
 
@@ -205,7 +215,7 @@ class GameFragment : Fragment() {
         val pieces = ChessBoardManager.getBoard()
         for (row in 0 until 8) {
             for (col in 0 until 8) {
-                sb.append(pieces[row][col]?.toString() ?: ".")
+                sb.append(pieces[row][col]?.toString() ?: "..")
             }
         }
         return sb.toString()
@@ -253,6 +263,18 @@ class GameFragment : Fragment() {
             }
             .setCancelable(false)
             .show()
+
+        saveGameToDatabase()
+    }
+
+    private fun saveGameToDatabase() {
+        val endTime = System.currentTimeMillis()
+        val positionHistoryString = positionHistory.joinToString(separator = ",")
+        val completedGame = CompletedGame(positionHistory = positionHistoryString, endTime = endTime)
+
+        lifecycleScope.launch {
+            db.completedGameDao().insert(completedGame)
+        }
     }
 
     private fun resetGame() {
@@ -260,11 +282,6 @@ class GameFragment : Fragment() {
         moveCount = 0
         noCaptureOrPawnMoveCount = 0
         positionHistory.clear()
-        updateChessBoard()
-    }
-
-    fun setTheme(theme: String) {
-        selectedTheme = theme
         updateChessBoard()
     }
 }
